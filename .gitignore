@@ -1,5 +1,5 @@
 /build
-
+/release
 release/snake.html
 release/snake-mac
 release/snake-linux
