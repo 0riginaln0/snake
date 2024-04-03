@@ -127,8 +127,9 @@ func playing() {
 		if snake.Body[0] == fruit {
 			score += 1
 			snake.Body = append(snake.Body, snake.Body[len(snake.Body)-1])
-			fruit.X = rnd(20)
-			fruit.Y = rnd(20)
+
+			generateNewApple()
+
 			switch score {
 			case 20:
 				speed = 12
@@ -148,4 +149,21 @@ func playing() {
 
 	*w4.DRAW_COLORS = 0x4321
 	w4.Blit(&fruitSprite[0], fruit.X*8, fruit.Y*8, 8, 8, w4.BLIT_2BPP)
+}
+
+func generateNewApple() {
+	foundNewPlace := false
+	p := Point{}
+	for !foundNewPlace {
+		foundNewPlace = true
+		p.X = rnd(20)
+		p.Y = rnd(20)
+		for _, body_part := range snake.Body {
+			if body_part == p {
+				foundNewPlace = false
+				break
+			}
+		}
+	}
+	fruit = p
 }
