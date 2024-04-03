@@ -10,7 +10,7 @@ in folder release
 
 - windows
 
-- ios
+- mac
 
 - linux
 
