@@ -2,21 +2,14 @@
 
 A game written in Go for the [WASM-4](https://wasm4.org) fantasy console.
 
-## Building
+# releases
+.html (web, mobile)
 
-Build the cart by running:
+windows
 
-```shell
-make
-```
+ios
 
-Then run it with:
-
-```shell
-w4 run build/cart.wasm
-```
-
-For more info about setting up WASM-4, see the [quickstart guide](https://wasm4.org/docs/getting-started/setup?code-lang=go#quickstart).
+linux
 
 ## Links
 
