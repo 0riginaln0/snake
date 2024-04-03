@@ -3,13 +3,16 @@
 A game written in Go for the [WASM-4](https://wasm4.org) fantasy console.
 
 # releases
-.html (web, mobile)
 
-windows
+in folder release
 
-ios
+- .html (web, mobile)
 
-linux
+- windows
+
+- ios
+
+- linux
 
 ## Links
 
