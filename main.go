@@ -21,36 +21,8 @@ var (
 	score       = 0
 	level       = "easy"  // still ez, medium, hard
 	mode        = "start" // playing, game over
+	input_taken = false
 )
-
-func input() {
-	justPressed := *w4.GAMEPAD1 & (*w4.GAMEPAD1 ^ prevState)
-
-	if *w4.GAMEPAD1 != 0 && rnd == nil {
-		rnd = rand.New(rand.NewSource(int64(frameCount))).Intn
-	}
-
-	if justPressed&w4.BUTTON_UP != 0 {
-		snake.Up()
-	}
-	if justPressed&w4.BUTTON_DOWN != 0 {
-		snake.Down()
-	}
-	if justPressed&w4.BUTTON_LEFT != 0 {
-		snake.Left()
-	}
-	if justPressed&w4.BUTTON_RIGHT != 0 {
-		snake.Right()
-	}
-
-	if (justPressed&w4.BUTTON_UP != 0 || justPressed&w4.BUTTON_DOWN != 0 ||
-		justPressed&w4.BUTTON_LEFT != 0 || justPressed&w4.BUTTON_RIGHT != 0) &&
-		(mode == "start" || mode == "game over") {
-		mode = "playing"
-	}
-
-	prevState = *w4.GAMEPAD1
-}
 
 //go:export start
 func start() {
@@ -65,7 +37,6 @@ func start() {
 //go:export update
 func update() {
 	frameCount++
-	input()
 	switch mode {
 	case "start":
 		startScreen()
@@ -78,6 +49,40 @@ func update() {
 	}
 }
 
+func anyInput() {
+	justPressed := *w4.GAMEPAD1 & (*w4.GAMEPAD1 ^ prevState)
+	if (justPressed&w4.BUTTON_UP != 0 || justPressed&w4.BUTTON_DOWN != 0 ||
+		justPressed&w4.BUTTON_LEFT != 0 || justPressed&w4.BUTTON_RIGHT != 0) &&
+		(mode == "start" || mode == "game over") {
+		mode = "playing"
+	}
+
+	prevState = *w4.GAMEPAD1
+}
+
+func input() {
+	justPressed := *w4.GAMEPAD1 & (*w4.GAMEPAD1 ^ prevState)
+
+	if *w4.GAMEPAD1 != 0 && rnd == nil {
+		rnd = rand.New(rand.NewSource(int64(frameCount))).Intn
+	}
+
+	if justPressed&w4.BUTTON_UP != 0 {
+		input_taken = true
+		snake.Up()
+	} else if justPressed&w4.BUTTON_DOWN != 0 {
+		input_taken = true
+		snake.Down()
+	} else if justPressed&w4.BUTTON_LEFT != 0 {
+		input_taken = true
+		snake.Left()
+	} else if justPressed&w4.BUTTON_RIGHT != 0 {
+		input_taken = true
+		snake.Right()
+	}
+	prevState = *w4.GAMEPAD1
+}
+
 func winScreen() {
 	w4.Text("Wow. I am impressed", 0, 70)
 	w4.Text("Well done", 0, 90)
@@ -85,10 +90,12 @@ func winScreen() {
 }
 
 func gameOver() {
+	anyInput()
 	w4.Text("GAME OVER", 30, 70)
 }
 
 func startScreen() {
+	anyInput()
 	w4.Text("SNAKE", 30, 30)
 	w4.Text("Made by me", 20, 90)
 	w4.Text("github.com", 0, 110)
@@ -100,7 +107,12 @@ func playing() {
 	w4.Text("Score:"+strconv.FormatInt(int64(score), 10)+"/300", 4, 4)
 	w4.Text(level, 92, 148)
 
+	if !input_taken {
+		input()
+	}
+
 	if frameCount%speed == 0 {
+		input_taken = false
 		snake.Update()
 
 		if snake.IsDead() {
