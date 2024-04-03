@@ -1,1 +1,6 @@
 /build
+
+release/snake.html
+release/snake-mac
+release/snake-linux
+release/snake.exe
