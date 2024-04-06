@@ -20,7 +20,7 @@ var (
 	speed       = 15 // 12, 10, 6
 	score       = 0
 	level       = "easy"  // still ez, medium, hard
-	mode        = "start" // playing, game over
+	mode        = "start" // playing, game over, win
 	input_taken = false
 )
 
@@ -140,7 +140,7 @@ func playing() {
 			case 60:
 				speed = 6
 				level = "hard"
-			case 300:
+			case 100:
 				mode = "win"
 			}
 		}
