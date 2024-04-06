@@ -91,8 +91,10 @@ func winScreen() {
 }
 
 func gameOver() {
-	anyInput()
 	w4.Text("GAME OVER", 30, 70)
+	w4.Text("good luck next time", 5, 90)
+	w4.Text(":)", 75, 120)
+	anyInput()
 }
 
 func startScreen() {
