@@ -55,6 +55,8 @@ func anyInput() {
 	if (justPressed&w4.BUTTON_UP != 0 || justPressed&w4.BUTTON_DOWN != 0 ||
 		justPressed&w4.BUTTON_LEFT != 0 || justPressed&w4.BUTTON_RIGHT != 0) &&
 		(mode == "start" || mode == "game over") {
+		startscreenTimeout = 0
+		gameoverTimeout = 0
 		mode = "playing"
 	}
 
@@ -90,20 +92,35 @@ func winScreen() {
 	w4.Text("Take a break :)", 0, 110)
 }
 
+var gameoverTimeout = 0
+
 func gameOver() {
+	gameoverTimeout += 1
 	w4.Text("GAME OVER", 30, 70)
-	w4.Text("good luck next time", 5, 90)
-	w4.Text(":)", 75, 120)
-	anyInput()
+	if gameoverTimeout >= 60 {
+
+		w4.Text("good luck next time", 5, 90)
+	}
+	if gameoverTimeout >= 120 {
+		w4.Text(":)", 75, 120)
+	}
+	if gameoverTimeout >= 180 {
+		anyInput()
+	}
 }
 
+var startscreenTimeout = 0
+
 func startScreen() {
-	anyInput()
+	startscreenTimeout += 1
 	w4.Text("SNAKE", 30, 30)
-	w4.Text("Made by me", 20, 90)
-	w4.Text("github.com", 0, 110)
-	w4.Text("/", 75, 120)
-	w4.Text("0riginaln0", 80, 130)
+	if startscreenTimeout >= 90 {
+		w4.Text("Made by me", 20, 90)
+		w4.Text("github.com", 0, 110)
+		w4.Text("/", 75, 120)
+		w4.Text("0riginaln0", 80, 130)
+		anyInput()
+	}
 }
 
 func playing() {

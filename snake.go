@@ -14,9 +14,9 @@ type Snake struct {
 
 func (s *Snake) Reset() {
 	s.Body = []Point{
-		{X: 12, Y: 10},
-		{X: 11, Y: 10},
-		{X: 10, Y: 10},
+		{X: 7, Y: 10},
+		{X: 6, Y: 10},
+		{X: 5, Y: 10},
 	}
 	s.Direction = Point{X: 1, Y: 0}
 }
