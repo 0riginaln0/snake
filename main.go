@@ -11,17 +11,18 @@ import (
 )
 
 var (
-	snake       = &Snake{}
-	frameCount  = 0
-	prevState   uint8
-	fruit       = Point{X: 10, Y: 10}
-	rnd         func(int) int
-	fruitSprite = [16]byte{0x00, 0xa0, 0x02, 0x00, 0x0e, 0xf0, 0x36, 0x5c, 0xd6, 0x57, 0xd5, 0x57, 0x35, 0x5c, 0x0f, 0xf0}
-	speed       = 15 // 12, 10, 6
-	score       = 0
-	level       = "easy"  // still ez, medium, hard
-	mode        = "start" // playing, game over, win
-	input_taken = false
+	snake        = &Snake{}
+	frameCount   = 0
+	prevState    uint8
+	fruit        = Point{X: 10, Y: 10}
+	rnd          func(int) int
+	fruitSprite  = [16]byte{0x00, 0xa0, 0x02, 0x00, 0x0e, 0xf0, 0x36, 0x5c, 0xd6, 0x57, 0xd5, 0x57, 0x35, 0x5c, 0x0f, 0xf0}
+	speed        = 15 // 12, 10, 6
+	score        = 0
+	winningScore = 100
+	level        = "easy"  // still ez, medium, hard
+	mode         = "start" // playing, game over, win
+	input_taken  = false
 )
 
 //go:export start
@@ -104,7 +105,10 @@ func startScreen() {
 }
 
 func playing() {
-	w4.Text("Score:"+strconv.FormatInt(int64(score), 10)+"/300", 4, 4)
+	w4.Text(
+		"Score:"+strconv.FormatInt(int64(score), 10)+
+			"/"+strconv.FormatInt(int64(winningScore), 10),
+		4, 4)
 	w4.Text(level, 92, 148)
 
 	if !input_taken {
@@ -140,7 +144,7 @@ func playing() {
 			case 60:
 				speed = 6
 				level = "hard"
-			case 100:
+			case winningScore:
 				mode = "win"
 			}
 		}
