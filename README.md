@@ -14,6 +14,22 @@ in folder release
 
 - linux
 
+
+## todo
+
+- transparent background of an apple
+
+- refactoring with the state pattern
+
+- main menu music
+
+- gameover music
+
+- eating apple and dying sounds
+
+- music for all difficulty levels
+  
+
 ## Links
 
 - [Documentation](https://wasm4.org/docs): Learn more about WASM-4.
