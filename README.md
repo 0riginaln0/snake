@@ -17,8 +17,6 @@ in folder release
 
 ## todo
 
-- transparent background of an apple
-
 - refactoring with the state pattern
 
 - main menu music

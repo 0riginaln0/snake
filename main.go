@@ -148,6 +148,7 @@ func playing() {
 		}
 
 		if snake.Body[0] == fruit {
+			//w4.Trace("am nyam")
 			score += 1
 			snake.Body = append(snake.Body, snake.Body[len(snake.Body)-1])
 
@@ -170,7 +171,7 @@ func playing() {
 	}
 	snake.Draw()
 
-	*w4.DRAW_COLORS = 0x4321
+	*w4.DRAW_COLORS = 0x4320
 	w4.Blit(&fruitSprite[0], fruit.X*8, fruit.Y*8, 8, 8, w4.BLIT_2BPP)
 }
 
