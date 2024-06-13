@@ -35,6 +35,7 @@ var (
 	difficultyLevel = difficulty.Easy
 	gameState       = state.Start
 	inputBuffer     = make([]Direction, 0, 60)
+	bip             = 0 // countdown for music
 )
 
 //go:export start
@@ -64,13 +65,42 @@ func update() {
 }
 
 func winScreen() {
+	timeoutCounter += 1
 	w4.Text("Wow. I am impressed", 0, 70)
-	w4.Text("Well done", 0, 90)
-	w4.Text("Take a break :)", 0, 110)
+	if bip == 0 {
+		w4.Tone(34+12, 250|(1<<24)|(4<<16)|(60<<8), 50, w4.TONE_NOTE_MODE|w4.TONE_PULSE2|w4.TONE_MODE3)
+		bip += 1
+	}
+	if timeoutCounter > 60 {
+		w4.Text("Well done", 0, 90)
+
+		if bip == 1 {
+			w4.Tone(34+7+12, 250|(2<<24)|(4<<16)|(60<<8), 50, w4.TONE_NOTE_MODE|w4.TONE_PULSE1|w4.TONE_MODE2)
+			bip += 1
+		}
+	}
+
+	if timeoutCounter > 101 {
+		w4.Text("Take a break :)", 0, 110)
+		if bip == 2 {
+			w4.Tone(34+12+12, 255|(1<<24)|(4<<16)|(1<<8), 100, w4.TONE_NOTE_MODE|w4.TONE_TRIANGLE|w4.TONE_MODE2)
+			bip += 1
+		}
+	}
+	if timeoutCounter > 215 {
+		if bip == 3 {
+			w4.Tone(34+12+12+12, 170|(33<<24)|(4<<16)|(10<<8), 30, w4.TONE_NOTE_MODE|w4.TONE_PULSE1|w4.TONE_MODE1)
+			bip += 1
+		}
+	}
 }
 
 func startScreen() {
 	w4.Text("SNAKE", 30, 30)
+	if bip == 0 {
+		w4.Tone(490|(720<<16), 126|(134<<24)|(160<<16)|(100<<8), 19|(48<<8), w4.TONE_NOISE|w4.TONE_MODE4)
+		bip += 1
+	}
 
 	timeoutCounter += 1
 	if timeoutCounter >= 90 {
@@ -85,15 +115,27 @@ func startScreen() {
 
 func gameOver() {
 	w4.Text("GAME OVER", 30, 70)
-
+	if bip == 0 {
+		w4.Tone(34, 120|(1<<24)|(15<<16)|(60<<8), 50, w4.TONE_NOTE_MODE|w4.TONE_PULSE2|w4.TONE_MODE2)
+		bip += 1
+	}
 	timeoutCounter += 1
 	if timeoutCounter >= 60 {
+		if bip == 1 {
+			w4.Tone(41, 230|(60<<8), 50, w4.TONE_NOTE_MODE|w4.TONE_PULSE1|w4.TONE_MODE4)
+			bip += 2
+		}
 		w4.Text("good luck next time", 5, 90)
+
 	}
-	if timeoutCounter >= 120 {
+	if timeoutCounter >= 100 {
+		if bip == 3 {
+			w4.Tone(30, 255|(1<<24)|(15<<16)|(60<<8), 50, w4.TONE_NOTE_MODE|w4.TONE_PULSE2|w4.TONE_MODE4)
+			bip += 1
+		}
 		w4.Text(":)", 75, 120)
 	}
-	if timeoutCounter >= 180 {
+	if timeoutCounter >= 160 {
 		startGameOnInput()
 	}
 }
@@ -107,6 +149,7 @@ func startGameOnInput() {
 		timeoutCounter = 0
 
 		gameState = state.Playing
+		bip = 0
 	}
 	prevState = *w4.GAMEPAD1
 }
@@ -145,9 +188,11 @@ func playing() {
 			score = 0
 			frameCounter = 0
 			gameState = state.GameOver
+			bip = 0
 		}
 
 		if snake.Body[0] == fruit {
+			w4.Tone(490|(720<<16), 10|(8<<24)|(12<<8), 100, w4.TONE_TRIANGLE)
 			//w4.Trace("am nyam")
 			score += 1
 			snake.Body = append(snake.Body, snake.Body[len(snake.Body)-1])
