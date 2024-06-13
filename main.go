@@ -14,19 +14,29 @@ import (
 
 const winningScore = 100
 
+type Direction uint8
+
+const (
+	Up Direction = iota
+	Down
+	Left
+	Right
+)
+
 var (
 	snake           = &Snake{}
 	frameCounter    = 0
+	timeoutCounter  = 0 // Used for menu animations
 	prevState       uint8
+	prevDir         = Right
 	fruit           = Point{X: 10, Y: 10}
-	rnd             func(int) int
 	fruitSprite     = [16]byte{0x00, 0xa0, 0x02, 0x00, 0x0e, 0xf0, 0x36, 0x5c, 0xd6, 0x57, 0xd5, 0x57, 0x35, 0x5c, 0x0f, 0xf0}
+	rnd             func(int) int
 	speed           = 15 // 12, 10, 6
 	score           = 0
 	difficultyLevel = difficulty.Easy
 	gameState       = state.Start
-	inputTaken      = false
-	timeoutCounter  = 0 // Used for menu animations
+	inputBuffer     = make([]Direction, 0, 60)
 )
 
 //go:export start
@@ -104,6 +114,8 @@ func startGameOnInput() {
 }
 
 func playing() {
+	takeInput()
+
 	w4.Text(
 		"Score:"+
 			strconv.FormatInt(int64(score), 10)+
@@ -112,12 +124,20 @@ func playing() {
 		4, 4)
 	w4.Text(difficultyLevel.String(), 92, 148)
 
-	if !inputTaken {
-		input()
-	}
-
 	if frameCounter%speed == 0 {
-		inputTaken = false
+		if len(inputBuffer) != 0 {
+			switch inputBuffer[0] {
+			case Up:
+				snake.Up()
+			case Down:
+				snake.Down()
+			case Left:
+				snake.Left()
+			case Right:
+				snake.Right()
+			}
+			inputBuffer = inputBuffer[1:]
+		}
 		snake.Update()
 
 		if snake.IsDead() {
@@ -157,26 +177,27 @@ func playing() {
 	w4.Blit(&fruitSprite[0], fruit.X*8, fruit.Y*8, 8, 8, w4.BLIT_2BPP)
 }
 
-func input() {
+func takeInput() {
 	justPressed := *w4.GAMEPAD1 & (*w4.GAMEPAD1 ^ prevState)
 
 	if *w4.GAMEPAD1 != 0 && rnd == nil {
 		rnd = rand.New(rand.NewSource(int64(frameCounter))).Intn
 	}
 
-	if justPressed&w4.BUTTON_UP != 0 {
-		inputTaken = true
-		snake.Up()
-	} else if justPressed&w4.BUTTON_DOWN != 0 {
-		inputTaken = true
-		snake.Down()
-	} else if justPressed&w4.BUTTON_LEFT != 0 {
-		inputTaken = true
-		snake.Left()
-	} else if justPressed&w4.BUTTON_RIGHT != 0 {
-		inputTaken = true
-		snake.Right()
+	if justPressed&w4.BUTTON_UP != 0 && prevDir != Down && prevDir != Up {
+		inputBuffer = append(inputBuffer, Up)
+		prevDir = Up
+	} else if justPressed&w4.BUTTON_DOWN != 0 && prevDir != Down && prevDir != Up {
+		inputBuffer = append(inputBuffer, Down)
+		prevDir = Down
+	} else if justPressed&w4.BUTTON_LEFT != 0 && prevDir != Left && prevDir != Right {
+		inputBuffer = append(inputBuffer, Left)
+		prevDir = Left
+	} else if justPressed&w4.BUTTON_RIGHT != 0 && prevDir != Left && prevDir != Right {
+		inputBuffer = append(inputBuffer, Right)
+		prevDir = Right
 	}
+
 	prevState = *w4.GAMEPAD1
 }
 
