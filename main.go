@@ -1,6 +1,4 @@
-/*
-	w4 bundle build/cart.wasm --title "Snake" --html release/snake.html --windows release/snake.exe --mac release/snake-mac --linux release/snake-linux
-*/
+//	w4 bundle build/cart.wasm --title "Snake" --html release/snake.html --windows release/snake.exe --mac release/snake-mac --linux release/snake-linux
 
 package main
 
