@@ -6,7 +6,7 @@ A game written in Go for the [WASM-4](https://wasm4.org) fantasy console.
 
 Go to https://github.com/0riginaln0/snake/releases and download the executable for you.
 
-Available on following platforms: Windows, macOS, Linux, Web (html)
+Available on the following platforms: Windows, macOS, Linux, Web (html)
 
 ## Building
 
